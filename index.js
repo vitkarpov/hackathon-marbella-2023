@@ -1,14 +1,14 @@
 const express = require('express')
 const app = express()
 const port = 3000
-import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import {
+const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
+const {
   DynamoDBDocumentClient,
   PutCommand,
   GetCommand,
   UpdateCommand,
-} from "@aws-sdk/lib-dynamodb";
-import { randomUUID } from "crypto";
+} = require("@aws-sdk/lib-dynamodb");
+const { randomUUID } = require("crypto");
 
 const client = new DynamoDBClient({});
 const dynamo = DynamoDBDocumentClient.from(client);
