@@ -9,12 +9,15 @@ const {
   UpdateCommand,
 } = require("@aws-sdk/lib-dynamodb");
 const { randomUUID } = require("crypto");
+const bodyParser = require('body-parser')
 
 const client = new DynamoDBClient({
   region: 'eu-west-1'
 });
 const dynamo = DynamoDBDocumentClient.from(client);
 const tableName = "Team57";
+
+app.use(bodyParser.json());
 
 app.get('/answers/:id', async (req, res) => {
   const response = await dynamo.send(
@@ -43,13 +46,12 @@ app.put('/answers', async (req, res) => {
 });
 
 app.post('/answers', async (req, res) => {
-  const data = JSON.parse(req.body);
   const response = await dynamo.send(
     new UpdateCommand({
       TableName: tableName,
-      Key: { id: data.id },
+      Key: { id: req.body.id },
       UpdateExpression: "set answer = :a",
-      ExpressionAttributeValues: {":a": data.answer},
+      ExpressionAttributeValues: {":a": req.body.answer},
       ReturnValues: "UPDATED_NEW"
     })
   );
