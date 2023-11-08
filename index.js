@@ -48,8 +48,7 @@ app.put('/answers', async (req, res) => {
 app.post('/answers', async (req, res) => {
   if (req.body.products) {
     req.body.answer = `
-      Here's a list of competitors: ${req.body.products.map((product) => product.name).join(', ')},
-      followed by a list of MessageBird products they use: ${req.body.products.map((product) => product.All_Products__c).join(', ')}
+      Here's a list of competitors: ${req.body.products.map((product) => product.Name).join(', ')}, followed by a list of MessageBird products they use: ${req.body.products.map((product) => product.All_Products__c).join(', ')}
     `.trim();
   }
   const response = await dynamo.send(
