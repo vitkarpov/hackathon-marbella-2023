@@ -39,7 +39,6 @@ app.put('/answers', async (req, res) => {
       Item: {
         id,
         answer: '',
-        products: [],
       },
     })
   );
@@ -47,29 +46,22 @@ app.put('/answers', async (req, res) => {
 });
 
 app.post('/answers', async (req, res) => {
-  if (req.body.answer) {
-    const response = await dynamo.send(
-      new UpdateCommand({
-        TableName: tableName,
-        Key: { id: req.body.id },
-        UpdateExpression: "set answer = :a",
-        ExpressionAttributeValues: {":a": req.body.answer},
-        ReturnValues: "UPDATED_NEW"
-      })
-    );
-    res.json(response.Attributes);
-  } else if (req.body.products) {
-    const response = await dynamo.send(
-      new UpdateCommand({
-        TableName: tableName,
-        Key: { id: req.body.id },
-        UpdateExpression: "set products = :a",
-        ExpressionAttributeValues: {":a": req.body.products},
-        ReturnValues: "UPDATED_NEW"
-      })
-    );
-    res.json(response.Attributes);
+  if (req.body.products) {
+    req.body.answer = `
+      Here's a list of competitors: ${req.body.products.map((product) => product.name).join(', ')},
+      followed by a list of MessageBird products they use: ${req.body.products.map((product) => product.All_Products__c).join(', ')}
+    `.trim();
   }
+  const response = await dynamo.send(
+    new UpdateCommand({
+      TableName: tableName,
+      Key: { id: req.body.id },
+      UpdateExpression: "set answer = :a",
+      ExpressionAttributeValues: {":a": req.body.answer},
+      ReturnValues: "UPDATED_NEW"
+    })
+  );
+  res.json(response.Attributes);
 });
 
 app.listen(port, () => {
