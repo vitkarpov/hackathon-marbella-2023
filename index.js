@@ -10,7 +10,9 @@ const {
 } = require("@aws-sdk/lib-dynamodb");
 const { randomUUID } = require("crypto");
 
-const client = new DynamoDBClient({});
+const client = new DynamoDBClient({
+  region: 'eu-west-1'
+});
 const dynamo = DynamoDBDocumentClient.from(client);
 const tableName = "Team57";
 
